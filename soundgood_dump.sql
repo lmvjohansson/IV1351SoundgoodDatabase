@@ -63,6 +63,35 @@ CREATE TABLE public.contact_person (
 ALTER TABLE public.contact_person OWNER TO postgres;
 
 --
+-- Name: discount; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.discount (
+    discount_id integer NOT NULL,
+    discount_type character varying(500) NOT NULL,
+    discount_percentage numeric(5,2) NOT NULL,
+    valid_from date NOT NULL,
+    valid_until date
+);
+
+
+ALTER TABLE public.discount OWNER TO postgres;
+
+--
+-- Name: discount_discount_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.discount ALTER COLUMN discount_id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.discount_discount_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
 -- Name: ensemble; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -325,6 +354,7 @@ ALTER TABLE public.instrument_type ALTER COLUMN instrument_type_id ADD GENERATED
 CREATE TABLE public.lease (
     person_id integer NOT NULL,
     instrument_inventory_id integer NOT NULL,
+    start_date date NOT NULL,
     expiration_date date NOT NULL,
     delivery_address character varying(500) NOT NULL
 );
@@ -486,6 +516,15 @@ COPY public.contact_person (person_id, name, relationship, phone, email) FROM st
 190	Lars Andersson	Father	0767890128	lars.andersson@gmail.com
 194	Erik Larsson	Father	0701234572	erik.larsson@gmail.com
 198	Anna Persson	Mother	0745678907	anna.persson@gmail.com
+\.
+
+
+--
+-- Data for Name: discount; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.discount (discount_id, discount_type, discount_percentage, valid_from, valid_until) FROM stdin;
+1	Sibling discount	10.00	2022-11-16	\N
 \.
 
 
@@ -1231,29 +1270,29 @@ COPY public.instrument_type (instrument_type_id, instrument_type) FROM stdin;
 -- Data for Name: lease; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.lease (person_id, instrument_inventory_id, expiration_date, delivery_address) FROM stdin;
-121	1	2024-12-15	Kungsgatan 25, 11456 Stockholm
-122	5	2024-12-20	Drottninggatan 37, 75238 Uppsala
-123	10	2024-11-30	Storgatan 19, 76291 Rimbo
-124	2	2024-12-10	Vasagatan 51, 76164 Norrtalje
-124	17	2024-12-10	Vasagatan 51, 76164 Norrtalje
-125	6	2024-12-25	Birgersgatan 76, 72346 Vasteras
-126	14	2024-11-25	Karlavagen 3, 70374 Orebro
-127	2	2024-12-05	Sveavagen 59, 58273 Linkoping
-128	19	2024-12-30	Gotgatan 31, 60223 Norrkoping
-129	12	2024-12-15	Valhallavagen 88, 35234 Vaxjo
-129	11	2024-12-15	Valhallavagen 88, 35234 Vaxjo
-130	16	2024-12-20	Odengatan 42, 39231 Kalmar
-131	8	2024-11-28	Kungsgatan 71, 11456 Stockholm
-133	9	2024-12-22	Storgatan 47, 76291 Rimbo
-154	3	2024-12-18	Gotgatan 31, 60223 Norrkoping
-154	25	2024-12-18	Gotgatan 31, 60223 Norrkoping
-139	20	2024-12-12	Valhallavagen 23, 35234 Vaxjo
-140	13	2024-12-08	Odengatan 56, 39231 Kalmar
-144	4	2024-12-25	Vasagatan 39, 76164 Norrtalje
-145	18	2024-12-15	Kungsgatan 15, 11456 Stockholm
-147	11	2024-12-30	Storgatan 7, 76291 Rimbo
-148	26	2024-12-05	Vasagatan 45, 76164 Norrtalje
+COPY public.lease (person_id, instrument_inventory_id, start_date, expiration_date, delivery_address) FROM stdin;
+121	1	2024-11-15	2024-12-15	Kungsgatan 25, 11456 Stockholm
+122	5	2024-11-20	2024-12-20	Drottninggatan 37, 75238 Uppsala
+123	10	2024-10-30	2024-11-30	Storgatan 19, 76291 Rimbo
+124	2	2024-11-10	2024-12-10	Vasagatan 51, 76164 Norrtalje
+124	17	2024-11-10	2024-12-10	Vasagatan 51, 76164 Norrtalje
+125	6	2024-11-25	2024-12-25	Birgersgatan 76, 72346 Vasteras
+126	14	2024-10-25	2024-11-25	Karlavagen 3, 70374 Orebro
+127	2	2024-11-05	2024-12-05	Sveavagen 59, 58273 Linkoping
+128	19	2024-11-30	2024-12-30	Gotgatan 31, 60223 Norrkoping
+129	12	2024-11-15	2024-12-15	Valhallavagen 88, 35234 Vaxjo
+129	11	2024-11-15	2024-12-15	Valhallavagen 88, 35234 Vaxjo
+130	16	2024-11-20	2024-12-20	Odengatan 42, 39231 Kalmar
+131	8	2024-10-28	2024-11-28	Kungsgatan 71, 11456 Stockholm
+133	9	2024-11-22	2024-12-22	Storgatan 47, 76291 Rimbo
+154	3	2024-11-18	2024-12-18	Gotgatan 31, 60223 Norrkoping
+154	25	2024-11-18	2024-12-18	Gotgatan 31, 60223 Norrkoping
+139	20	2024-11-12	2024-12-12	Valhallavagen 23, 35234 Vaxjo
+140	13	2024-11-08	2024-12-08	Odengatan 56, 39231 Kalmar
+144	4	2024-11-25	2024-12-25	Vasagatan 39, 76164 Norrtalje
+145	18	2024-11-15	2024-12-15	Kungsgatan 15, 11456 Stockholm
+147	11	2024-11-30	2024-12-30	Storgatan 7, 76291 Rimbo
+148	26	2024-11-05	2024-12-05	Vasagatan 45, 76164 Norrtalje
 \.
 
 
@@ -2198,6 +2237,13 @@ COPY public.type_of_lesson (type_of_lesson_id, type_of_lesson) FROM stdin;
 
 
 --
+-- Name: discount_discount_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.discount_discount_id_seq', 1, true);
+
+
+--
 -- Name: ensemble_ensemble_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -2287,6 +2333,14 @@ SELECT pg_catalog.setval('public.type_of_lesson_type_of_lesson_id_seq', 4, true)
 
 ALTER TABLE ONLY public.contact_person
     ADD CONSTRAINT contact_person_pkey PRIMARY KEY (person_id);
+
+
+--
+-- Name: discount discount_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.discount
+    ADD CONSTRAINT discount_pkey PRIMARY KEY (discount_id);
 
 
 --
@@ -2469,7 +2523,7 @@ ALTER TABLE ONLY public.type_of_lesson
 -- Name: lease check_lease_trigger; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-CREATE TRIGGER check_lease_trigger BEFORE INSERT OR UPDATE ON public.lease FOR EACH ROW EXECUTE FUNCTION public.check_lease_limit();
+CREATE TRIGGER check_lease_trigger BEFORE INSERT ON public.lease FOR EACH ROW EXECUTE FUNCTION public.check_lease_limit();
 
 
 --
