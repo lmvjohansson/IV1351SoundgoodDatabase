@@ -54,7 +54,6 @@ SELECT * FROM student_sibling_distribution;
 
 
 -- Task 3.3 List ids and names of all instructors who has given more than a specific number of lessons during the current month.
-CREATE OR REPLACE VIEW monthly_instructor_workload AS
 SELECT 
     instructor.instructor_id AS "Instructor Id", 
     person.name AS "Full Name", 
@@ -86,11 +85,9 @@ WHERE
 GROUP BY 
     instructor.instructor_id, person.name, person.address 
 HAVING 
-    COUNT(*) > 1 
+    COUNT(*) > 1  -- Lesson threshold variable
 ORDER BY 
     "No of Lessons" DESC; 
-
-SELECT * FROM monthly_instructor_workload;
 
 
 -- Task 3.4 List all ensembles held during the next week
