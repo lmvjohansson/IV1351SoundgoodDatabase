@@ -1,5 +1,5 @@
 -- Task 3.1 Show the number of lessons given per month during a specified year.
-CREATE OR REPLACE VIEW monthly_lessons_summary AS
+CREATE VIEW monthly_lessons_summary AS
 WITH lesson_data AS ( 
     SELECT 
         TO_CHAR(start_time, 'Mon') AS month, 
@@ -54,6 +54,7 @@ SELECT * FROM student_sibling_distribution;
 
 
 -- Task 3.3 List ids and names of all instructors who has given more than a specific number of lessons during the current month.
+CREATE VIEW instructor_monthly_lessons AS
 SELECT 
     instructor.instructor_id AS "Instructor Id", 
     person.name AS "Full Name", 
@@ -84,14 +85,16 @@ WHERE
     AND EXTRACT(YEAR FROM all_lessons.lesson_date) = EXTRACT(YEAR FROM CURRENT_DATE) 
 GROUP BY 
     instructor.instructor_id, person.name, person.address 
-HAVING 
-    COUNT(*) > 1  -- Lesson threshold variable
 ORDER BY 
-    "No of Lessons" DESC; 
+    "No of Lessons" DESC;
+
+-- The threshold of number of lessons is specified here
+SELECT * FROM instructor_monthly_lessons WHERE "No of Lessons" > 1;
+
 
 
 -- Task 3.4 List all ensembles held during the next week
-CREATE OR REPLACE VIEW ensemble_availability AS
+CREATE VIEW ensemble_availability AS
 SELECT 
     TO_CHAR(start_time, 'Dy') AS "Day", 
     genre AS "Genre", 
