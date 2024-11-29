@@ -41,6 +41,7 @@ WITH sibling_counts AS (
     COUNT(ps.sibling_id) AS number_of_siblings 
     FROM person p 
     LEFT JOIN person_sibling ps ON p.person_id = ps.person_id 
+    WHERE p.person_id NOT IN (SELECT person_id FROM instructor)
     GROUP BY p.person_id 
 ) 
 SELECT 
