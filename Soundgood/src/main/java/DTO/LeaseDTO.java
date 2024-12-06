@@ -1,5 +1,7 @@
 package DTO;
 
+import java.time.LocalDateTime;
+
 public class LeaseDTO {
 	private final int studentId;
 	private final int instrumentId;

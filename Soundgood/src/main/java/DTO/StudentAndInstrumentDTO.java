@@ -12,7 +12,7 @@ public class StudentAndInstrumentDTO {
 	public int getStudentId() {
 		return studentId;
 	}
-	public void setStudentId(int studentId) {
-		this.studentId = studentId;
+	public int getInstrumentId() {
+		return instrumentId;
 	}
 }
