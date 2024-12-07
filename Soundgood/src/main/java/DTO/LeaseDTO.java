@@ -1,18 +1,20 @@
 package DTO;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class LeaseDTO {
 	private final int studentId;
 	private final int instrumentId;
-	private final LocalDateTime startDate;
-	private final LocalDateTime expirationDate;
+	private final LocalDate startDate;
+	private final LocalDate expirationDate;
+	private final String deliveryAddress;
 
-	public LeaseDTO(int studentId, int instrumentId, LocalDateTime startDate, LocalDateTime expirationDate) {
+	public LeaseDTO(int studentId, int instrumentId, LocalDate startDate, LocalDate expirationDate, String deliveryAddress) {
 		this.studentId = studentId;
 		this.instrumentId = instrumentId;
 		this.startDate = startDate;
 		this.expirationDate = expirationDate;
+		this.deliveryAddress = deliveryAddress;
 	}
 
 	public int getStudentId() {
@@ -21,11 +23,14 @@ public class LeaseDTO {
 	public int getInstrumentId() {
 		return instrumentId;
 	}
-	public LocalDateTime getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
-	public LocalDateTime getExpirationDate() {
+	public LocalDate getExpirationDate() {
 		return expirationDate;
+	}
+	public String getDeliveryAddress() {
+		return deliveryAddress;
 	}
 
 }
