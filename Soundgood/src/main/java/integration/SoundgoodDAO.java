@@ -141,12 +141,12 @@ public class SoundgoodDAO {
      * @return information about instrument in an InstrumentDTO
      * @throws SoundgoodDBException if unable to retrieve instrument
      */
-    public InstrumentDTO findInstrumentById(String instrumentId) throws SoundgoodDBException {
+    public InstrumentDTO findInstrumentById(int instrumentId) throws SoundgoodDBException {
         PreparedStatement stmtToExecute = findInstrumentById;
         String failureMsg = "Could not search for specified account.";
         ResultSet result = null;
         try {
-            stmtToExecute.setString(1, instrumentId);
+            stmtToExecute.setInt(1, instrumentId);
             result = stmtToExecute.executeQuery();
             if (result.next()) {
                 return new InstrumentDTO(result.getInt(INSTRUMENT_PK_COLUMN),
@@ -168,12 +168,12 @@ public class SoundgoodDAO {
      * @return Information about student in a StudentDTO
      * @throws SoundgoodDBException if unable to retrieve student
      */
-    public StudentDTO findStudentById(String studentId) throws SoundgoodDBException {
+    public StudentDTO findStudentById(int studentId) throws SoundgoodDBException {
         PreparedStatement stmtToExecute = findStudentById;
         String failureMsg = "Could not search for specified account.";
         ResultSet result = null;
         try {
-            stmtToExecute.setString(1, studentId);
+            stmtToExecute.setInt(1, studentId);
             result = stmtToExecute.executeQuery();
             if (result.next()) {
                 return new StudentDTO(result.getInt(STUDENT_PERSON_ID_COLUMN),
@@ -202,11 +202,9 @@ public class SoundgoodDAO {
         String failureMsg = "Could not search for instruments.";
         ResultSet result = null;
         ArrayList<LeaseDTO> leases = new ArrayList<>();
-        LocalDate startDate;
-        LocalDate expirationDate;
 
         try {
-            stmtToExecute.setString(1, student.getId());
+            stmtToExecute.setInt(1, student.getId());
             result = stmtToExecute.executeQuery();
 
             while (result.next()) {
@@ -214,8 +212,8 @@ public class SoundgoodDAO {
                         result.getInt(LEASE_PERSON_ID_COLUMN),
                         result.getInt(LEASE_INSTRUMENT_ID_COLUMN),
                         result.getDate(LEASE_START_DATE_COLUMN).toLocalDate(),
-                        result.getDate(LEASE_EXPIRATION_DATE_COLUMN).toLocalDate()
-                        result.getString(LEASE_DELIVERY_ADDRESS_COLUMN),
+                        result.getDate(LEASE_EXPIRATION_DATE_COLUMN).toLocalDate(),
+                        result.getString(LEASE_DELIVERY_ADDRESS_COLUMN)
                 ));
             }
             return leases;
@@ -240,8 +238,8 @@ public class SoundgoodDAO {
         try {
             createLeaseStmt.setInt(1, lease.getStudentId());
             createLeaseStmt.setInt(2, lease.getInstrumentId());
-            createLeaseStmt.setDate(3, lease.getStartDate());
-            createLeaseStmt.setDate(4, lease.getExpirationDate());
+            createLeaseStmt.setDate(3, java.sql.Date.valueOf(lease.getStartDate()));
+            createLeaseStmt.setDate(4, java.sql.Date.valueOf(lease.getExpirationDate()));
             createLeaseStmt.setString(5, lease.getDeliveryAddress());
             updatedRows = createLeaseStmt.executeUpdate();
             if (updatedRows != 1) {
@@ -265,8 +263,8 @@ public class SoundgoodDAO {
         try {
             updateLeaseStmt.setInt(1, lease.getStudentId());
             updateLeaseStmt.setInt(2, lease.getInstrumentId());
-            updateLeaseStmt.setDate(3, lease.getStartDate());
-            updateLeaseStmt.setDate(4, lease.getExpirationDate());
+            updateLeaseStmt.setDate(3, java.sql.Date.valueOf(lease.getStartDate()));
+            updateLeaseStmt.setDate(4, java.sql.Date.valueOf(lease.getExpirationDate()));
             updateLeaseStmt.setString(5, lease.getDeliveryAddress());
             updatedRows = updateLeaseStmt.executeUpdate();
             if (updatedRows != 1) {

@@ -24,6 +24,11 @@
 
 package view;
 
+import DTO.InstrumentDTO;
+import DTO.ResultDTO;
+import controller.Controller;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -58,6 +63,9 @@ public class BlockingInterpreter {
      * "quit" command, or when the method <code>stop()</code> is called.
      */
     public void handleCmds() {
+        System.out.println("Welcome to Soundgood Music School!");
+        System.out.println("Type \"help\" to see the list of available commands");
+        System.out.println("Certain commands expect one or two inputs, write the command and inputs together on one line separated by spaces");
         keepReceivingCmds = true;
         while (keepReceivingCmds) {
             try {
@@ -75,10 +83,28 @@ public class BlockingInterpreter {
                         keepReceivingCmds = false;
                         break;
                     case LIST:
+                        if(cmdLine.getParameter(0) == "") {
+                            System.out.println("This command requires an instrument type to search for.");
+                            break;
+                        }
+                        ArrayList<InstrumentDTO> instruments = ctrl.listInstruments(cmdLine.getParameter(0));
+                        if(instruments.isEmpty()) {
+                            System.out.println("No instruments found.");
+                        }
+                        else {
+                            for (InstrumentDTO instrument : instruments) {
+                            System.out.println("Id: " + instrument.getId() + ", "
+                                    + "Type: " + instrument.getType() + ", "
+                                    + "Brand: " + instrument.getBrand() + ", "
+                                    + "Price: " + String.format("%.2f", instrument.getPrice()) + ", ");
+                            }
+                        }
                         break;
                     case RENT:
+                        ResultDTO result = ctrl.createLease(Integer.parseInt(cmdLine.getParameter(0)),Integer.parseInt(cmdLine.getParameter(1)));
                         break;
                     case TERMINATE:
+                        ResultDTO result = ctrl.terminateRental(Integer.parseInt(cmdLine.getParameter(0)),Integer.parseInt(cmdLine.getParameter(1)));
                         break;
                     default:
                         System.out.println("illegal command");
