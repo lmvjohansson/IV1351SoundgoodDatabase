@@ -1,5 +1,9 @@
 package model;
 
+import DTO.LeaseDTO;
+import DTO.StudentAndInstrumentDTO;
+import DTO.StudentDTO;
+
 import java.util.ArrayList;
 
 public class Student {
