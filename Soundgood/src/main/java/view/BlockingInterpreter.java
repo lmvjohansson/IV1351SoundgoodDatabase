@@ -26,6 +26,7 @@ package view;
 
 import DTO.InstrumentDTO;
 import DTO.ResultDTO;
+import DTO.StudentAndInstrumentDTO;
 import controller.Controller;
 
 import java.util.ArrayList;
@@ -101,10 +102,24 @@ public class BlockingInterpreter {
                         }
                         break;
                     case RENT:
-                        ResultDTO result = ctrl.createLease(Integer.parseInt(cmdLine.getParameter(0)),Integer.parseInt(cmdLine.getParameter(1)));
+                        StudentAndInstrumentDTO studentAndInstrument = new StudentAndInstrumentDTO(Integer.parseInt(cmdLine.getParameter(0)),Integer.parseInt(cmdLine.getParameter(1)));
+                        ResultDTO result = ctrl.rentInstrument(studentAndInstrument);
+                        if (result.isSuccess()) {
+                            System.out.println("Lease successfully created for student " + studentAndInstrument.getStudentId() + " for instrument " + studentAndInstrument.getInstrumentId());
+                        }
+                        else {
+                            System.out.println("Rent was not successful. " + result.getMessage());
+                        }
                         break;
                     case TERMINATE:
-                        ResultDTO result = ctrl.terminateRental(Integer.parseInt(cmdLine.getParameter(0)),Integer.parseInt(cmdLine.getParameter(1)));
+                        studentAndInstrument = new StudentAndInstrumentDTO(Integer.parseInt(cmdLine.getParameter(0)),Integer.parseInt(cmdLine.getParameter(1)));
+                        result = ctrl.terminateRental(studentAndInstrument);
+                        if (result.isSuccess()) {
+                            System.out.println("Lease successfully terminated for student " + studentAndInstrument.getStudentId() + " for instrument " + studentAndInstrument.getInstrumentId());
+                        }
+                        else {
+                            System.out.println("Rental termination was not successful " + result.getMessage());
+                        }
                         break;
                     default:
                         System.out.println("illegal command");

@@ -1,5 +1,7 @@
 package DTO;
 
+import model.Lease;
+
 import java.time.LocalDate;
 
 public class LeaseDTO {
@@ -15,6 +17,14 @@ public class LeaseDTO {
 		this.startDate = startDate;
 		this.expirationDate = expirationDate;
 		this.deliveryAddress = deliveryAddress;
+	}
+
+	public LeaseDTO(Lease lease) {
+		this.studentId = lease.getStudentId();
+		this.instrumentId = lease.getInstrumentId();
+		this.startDate = lease.getStartDate();
+		this.expirationDate = lease.getExpirationDate();
+		this.deliveryAddress = lease.getDeliveryAddress();
 	}
 
 	public int getStudentId() {

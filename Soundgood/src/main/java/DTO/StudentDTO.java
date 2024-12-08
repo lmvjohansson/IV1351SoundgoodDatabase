@@ -2,13 +2,13 @@ package DTO;
 
 public class StudentDTO {
 	private final int id;
-	private final int personNumber;
+	private final String personNumber;
 	private final String name;
 	private final String address;
 	private final String email;
 	private final int phone;
 
-	public StudentDTO(int id, int personNumber, String name, String address, String email, int phone) {
+	public StudentDTO(int id, String personNumber, String name, String address, String email, int phone) {
 		this.id = id;
 		this.personNumber = personNumber;
 		this.name = name;
@@ -19,7 +19,7 @@ public class StudentDTO {
 	public int getId() {
 		return id;
 	}
-	public int getPersonNumber() {
+	public String getPersonNumber() {
 		return personNumber;
 	}
 	public String getName() {

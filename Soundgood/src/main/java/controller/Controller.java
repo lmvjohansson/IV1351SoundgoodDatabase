@@ -23,11 +23,12 @@
 
 package controller;
 
-import DTO.InstrumentDTO;
-import DTO.ResultDTO;
+import DTO.*;
 import integration.SoundgoodDAO;
 import integration.SoundgoodDBException;
+import model.Lease;
 import model.LeaseException;
+import model.Student;
 
 import java.util.ArrayList;
 
@@ -59,45 +60,64 @@ public class Controller {
     }
 
     /**
-     *
-     * @param studentId
-     * @param instrumentId
-     * @return
-     * @throws LeaseException
+     * Method to rent instrument in database
+     * @param studentAndInstrument DTO with information on student and instrument to rent
+     * @return DTO with information of success on operation
+     * @throws LeaseException if unable to rent instrument
      */
-    public ResultDTO createLease(int studentId, int instrumentId) throws LeaseException {
-//        String failureMsg = "Could not create account for: " + holderName;
-//
-//        if (holderName == null) {
-//            throw new LeaseException(failureMsg);
-//        }
-//
-//        try {
-//            bankDb.createAccount(new Account(holderName));
-//        } catch (Exception e) {
-//            throw new LeaseException(failureMsg, e);
-//        }
+    public ResultDTO rentInstrument(StudentAndInstrumentDTO studentAndInstrument) throws LeaseException {
+        String failureMsg = "Could not rent instrument";
+        String failureMsgTooManyLeases = "Could not rent due to too many leases";
+
+        try {
+            StudentDTO studentDTO = soundgoodDb.findStudentById(studentAndInstrument.getStudentId());
+            InstrumentDTO instrument = soundgoodDb.findInstrumentById(studentAndInstrument.getInstrumentId());
+            Student student = new Student(studentDTO);
+            ArrayList<LeaseDTO> leases = soundgoodDb.findLeaseByStudent(studentDTO);
+            student.setLeases(leases);
+            if (student.isRentalAllowed()) {
+                Lease newLease = new Lease(studentDTO, instrument);
+                LeaseDTO newLeaseDTO = new LeaseDTO(newLease);
+                soundgoodDb.createLease(newLeaseDTO);
+                return new ResultDTO(true, null, newLeaseDTO);
+            }
+            else {
+                commitOngoingTransaction(failureMsgTooManyLeases);
+                return new ResultDTO(false, failureMsgTooManyLeases, null);
+            }
+        } catch (Exception e) {
+            throw new LeaseException(failureMsg, e);
+        }
     }
 
     /**
-     *
-     * @param studentId
-     * @param instrumentId
-     * @return
-     * @throws LeaseException
+     * Method to terminate a rental in the database
+     * @param studentAndInstrument DTO with information about the student and the instrument
+     * @return DTO with information on success of operation
+     * @throws LeaseException if unable to terminate lease
      */
-    public ResultDTO terminateRental(int studentId, int instrumentId) throws LeaseException {
-//        String failureMsg = "Could not delete account: " + acctNo;
-//
-//        if (acctNo == null) {
-//            throw new LeaseException(failureMsg);
-//        }
-//
-//        try {
-//            bankDb.deleteAccount(acctNo);
-//        } catch (Exception e) {
-//            throw new LeaseException(failureMsg, e);
-//        }
+    public ResultDTO terminateRental(StudentAndInstrumentDTO studentAndInstrument) throws LeaseException {
+        String failureMsg = "Could not terminate rental";
+
+        try {
+            StudentDTO studentDTO = soundgoodDb.findStudentById(studentAndInstrument.getStudentId());
+            Student student = new Student(studentDTO);
+            ArrayList<LeaseDTO> leases = soundgoodDb.findLeaseByStudent(studentDTO);
+            student.setLeases(leases);
+            Lease currentLease = student.findLease(studentAndInstrument);
+            if (currentLease != null) {
+                currentLease.terminateRental();
+                LeaseDTO newLeaseDTO = new LeaseDTO(currentLease);
+                soundgoodDb.updateLease(newLeaseDTO);
+                return new ResultDTO(true, null, newLeaseDTO);
+            }
+            else {
+                commitOngoingTransaction(failureMsg);
+                return new ResultDTO(false, failureMsg, null);
+            }
+        } catch (Exception e) {
+            throw new LeaseException(failureMsg, e);
+        }
     }
 
     private void commitOngoingTransaction(String failureMsg) throws LeaseException {

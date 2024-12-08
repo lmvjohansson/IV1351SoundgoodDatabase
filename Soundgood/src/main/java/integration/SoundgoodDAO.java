@@ -143,7 +143,7 @@ public class SoundgoodDAO {
      */
     public InstrumentDTO findInstrumentById(int instrumentId) throws SoundgoodDBException {
         PreparedStatement stmtToExecute = findInstrumentById;
-        String failureMsg = "Could not search for specified account.";
+        String failureMsg = "Could not search for instrument.";
         ResultSet result = null;
         try {
             stmtToExecute.setInt(1, instrumentId);
@@ -170,14 +170,14 @@ public class SoundgoodDAO {
      */
     public StudentDTO findStudentById(int studentId) throws SoundgoodDBException {
         PreparedStatement stmtToExecute = findStudentById;
-        String failureMsg = "Could not search for specified account.";
+        String failureMsg = "Could not find student by id.";
         ResultSet result = null;
         try {
             stmtToExecute.setInt(1, studentId);
             result = stmtToExecute.executeQuery();
             if (result.next()) {
                 return new StudentDTO(result.getInt(STUDENT_PERSON_ID_COLUMN),
-                        result.getInt(STUDENT_PERSON_NUMBER_COLUMN),
+                        result.getString(STUDENT_PERSON_NUMBER_COLUMN),
                         result.getString(STUDENT_NAME_COLUMN),
                         result.getString(STUDENT_ADDRESS_COLUMN),
                         result.getString(STUDENT_EMAIL_COLUMN),
@@ -261,11 +261,11 @@ public class SoundgoodDAO {
         String failureMsg = "Could not update the lease: " + lease;
         int updatedRows = 0;
         try {
-            updateLeaseStmt.setInt(1, lease.getStudentId());
-            updateLeaseStmt.setInt(2, lease.getInstrumentId());
-            updateLeaseStmt.setDate(3, java.sql.Date.valueOf(lease.getStartDate()));
-            updateLeaseStmt.setDate(4, java.sql.Date.valueOf(lease.getExpirationDate()));
-            updateLeaseStmt.setString(5, lease.getDeliveryAddress());
+            updateLeaseStmt.setDate(1, java.sql.Date.valueOf(lease.getStartDate()));
+            updateLeaseStmt.setDate(2, java.sql.Date.valueOf(lease.getExpirationDate()));
+            updateLeaseStmt.setString(3, lease.getDeliveryAddress());
+            updateLeaseStmt.setInt(4, lease.getStudentId());
+            updateLeaseStmt.setInt(5, lease.getInstrumentId());
             updatedRows = updateLeaseStmt.executeUpdate();
             if (updatedRows != 1) {
                 handleException(failureMsg, null);
@@ -299,7 +299,7 @@ public class SoundgoodDAO {
                         " FROM " + LEASE_TABLE_NAME + " WHERE " + LEASE_EXPIRATION_DATE_COLUMN + " > CURRENT_DATE)" + " FOR NO KEY UPDATE"
         );
         findStudentById = connection.prepareStatement(
-                "SELECT p." + STUDENT_PERSON_ID_COLUMN + ", p." + STUDENT_PHONE_NUMBER_COLUMN + ", p." + STUDENT_NAME_COLUMN + ", p." + STUDENT_ADDRESS_COLUMN +
+                "SELECT p." + STUDENT_PERSON_ID_COLUMN + ", p." + STUDENT_PERSON_NUMBER_COLUMN + ", p." + STUDENT_NAME_COLUMN + ", p." + STUDENT_ADDRESS_COLUMN +
                         ", p." + STUDENT_PHONE_NUMBER_COLUMN + ", p." + STUDENT_EMAIL_COLUMN +
                         " FROM " + STUDENT_TABLE_NAME + " p" +
                         " WHERE p." + STUDENT_PERSON_ID_COLUMN + " = ?" +
